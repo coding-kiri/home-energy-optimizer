@@ -210,7 +210,7 @@ __marimo__/
 /docs/
 
 # Entsoe
-.xml
+*.xml
 
 # Terraform
 **/.terraform/*
