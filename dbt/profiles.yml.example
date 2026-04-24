@@ -1,0 +1,11 @@
+energy:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: energy
+      schema: default
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+

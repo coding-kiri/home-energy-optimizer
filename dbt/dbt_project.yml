@@ -1,0 +1,35 @@
+name: energy
+version: 1.0.0
+profile: energy
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+models:
+  energy:
+    bronze:
+      +schema: bronze
+      +materialized: incremental
+      +incremental_strategy: append
+      +on_schema_change: sync_all_columns
+    silver:
+      +schema: silver
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: sync_all_columns
+    gold:
+      +schema: gold
+      dim_date: { +materialized: table }
+      dim_location: { +materialized: table }
+      dim_household: { +materialized: table }
+      fact_consumption: { +materialized: incremental, +incremental_strategy: merge }
+      fact_weather: { +materialized: incremental, +incremental_strategy: merge }
+      agg_hourly_summary: { +materialized: incremental, +incremental_strategy: merge }
+      agg_optimal_windows: { +materialized: table }
+
+seeds:
+  energy:
+    +schema: seeds
+
