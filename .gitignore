@@ -206,5 +206,26 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# My configs
+# --------- My configs ---------
 /docs/
+
+# Entsoe
+.xml
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+# Terraform variables (often contain secrets)
+*.tfvars
+*.tfvars.json
+# Local Terraform CLI config
+.terraformrc
+terraform.rc
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
