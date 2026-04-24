@@ -211,6 +211,7 @@ __marimo__/
 
 # Entsoe
 *.xml
+*.jsonl
 
 # Terraform
 **/.terraform/*
