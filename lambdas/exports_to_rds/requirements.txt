@@ -1,4 +1,0 @@
-psycopg[binary,pool]
-pyarrow
-boto3
-
