@@ -1,0 +1,13 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — never commit it.
+#
+# Databricks auth is inferred from ~/.databrickscfg (the same file used by
+# the Databricks VS Code extension and DAB). No token or host needed here.
+# Override databricks_profile only if you want a profile other than wsl-dev.
+
+env     = "dev"
+project = "home-energy-optimizer"
+
+aws_region = "eu-west-2"
+
+# databricks_profile = "wsl-dev"  # default — uncomment to override
