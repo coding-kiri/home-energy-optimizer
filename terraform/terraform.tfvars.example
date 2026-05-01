@@ -3,11 +3,20 @@
 #
 # Databricks auth is inferred from ~/.databrickscfg (the same file used by
 # the Databricks VS Code extension and DAB). No token or host needed here.
-# Override databricks_profile only if you want a profile other than wsl-dev.
+# Override databricks_profile only if you want a profile other than home-energy-optimizer-dev.
+#
+# First-time setup: run bootstrap.sh instead of applying manually.
+# It will guide you through the two-step process required to configure the
+# Unity Catalog storage credential.
 
 env     = "dev"
 project = "home-energy-optimizer"
 
 aws_region = "eu-west-2"
 
-# databricks_profile = "wsl-dev"  # default — uncomment to override
+# databricks_profile = "home-energy-optimizer-dev"  # default — uncomment to override
+
+# Bootstrap step 2 — fill in after running: terraform output databricks_credential
+# Leave blank on first apply; bootstrap.sh handles this automatically.
+# uc_master_role_arn = "arn:aws:iam::414351767826:role/unity-catalog-prod-UCMasterRole-..."
+# uc_external_id     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"

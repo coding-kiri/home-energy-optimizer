@@ -4,19 +4,45 @@ provider "databricks" {
 
 data "aws_caller_identity" "current" {}
 
-# Placeholder trust policy — allows the current AWS account root to assume the
-# role. After applying, go to AWS Console → IAM → this role → Trust relationships
-# and replace with the values from the "databricks_credential" outputs below.
+locals {
+  # True once the bootstrap outputs have been pasted into terraform.tfvars.
+  bootstrap_complete = var.uc_master_role_arn != "" && var.uc_external_id != ""
+
+  self_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-databricks-s3"
+
+  # Step 1 (bootstrap): only the self-assume statement so the role can be
+  # created and the storage credential can be registered with Databricks.
+  # Step 2 (bootstrap complete): add the UC master role statement so Unity
+  # Catalog can actually assume the role and access S3.
+  trust_statements = local.bootstrap_complete ? [
+    {
+      Effect    = "Allow"
+      Action    = "sts:AssumeRole"
+      Principal = { AWS = var.uc_master_role_arn }
+      Condition = { StringEquals = { "sts:ExternalId" = var.uc_external_id } }
+    },
+    {
+      Effect    = "Allow"
+      Action    = "sts:AssumeRole"
+      Principal = { AWS = local.self_role_arn }
+      Condition = { StringEquals = { "sts:ExternalId" = var.uc_external_id } }
+    }
+  ] : [
+    {
+      Effect    = "Allow"
+      Action    = "sts:AssumeRole"
+      Principal = { AWS = local.self_role_arn }
+      Condition = {}
+    }
+  ]
+}
+
 resource "aws_iam_role" "databricks_s3" {
   name = "${local.prefix}-databricks-s3"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Action    = "sts:AssumeRole"
-      Principal = { AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root" }
-    }]
+    Version   = "2012-10-17"
+    Statement = local.trust_statements
   })
 
   tags = {
@@ -66,8 +92,7 @@ resource "databricks_external_location" "medallion" {
   credential_name = databricks_storage_credential.medallion.name
   comment         = "Managed by Terraform — ${each.key} layer"
 
-  # Skips Databricks' S3 access check at creation time.
-  # The trust policy must be updated manually in the AWS Console after apply
-  # using the values from the "databricks_credential" outputs.
-  skip_validation = true
+  # Skips validation during step 1 of bootstrap (UC master role ARN not yet known).
+  # Automatically set to false once uc_master_role_arn and uc_external_id are provided.
+  skip_validation = !local.bootstrap_complete
 }
