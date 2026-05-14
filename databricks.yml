@@ -1,0 +1,27 @@
+bundle:
+  name: home-energy-optimizer
+
+include:
+  - resources/**/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog name
+    default: home-energy-optimizer
+  landing_schema:
+    description: Schema that holds raw UC Volumes (landing zone)
+    default: landing_zone
+  bronze_schema:
+    description: Schema for bronze-layer Delta tables
+    default: bronze_layer
+
+targets:
+  dev:
+    default: true
+    workspace:
+      profile: home-energy-optimizer-dev
+      root_path: ~/bundles/${bundle.name}/${bundle.target}
+    variables:
+      catalog: home-energy-optimizer
+      landing_schema: landing_zone
+      bronze_schema: bronze_layer

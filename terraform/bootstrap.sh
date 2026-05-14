@@ -27,8 +27,8 @@ terraform apply
 
 echo ""
 echo "=== Reading bootstrap outputs ==="
-UC_MASTER_ROLE_ARN=$(terraform output -raw -json databricks_credential | python3 -c "import sys,json; print(json.load(sys.stdin)['unity_catalog_iam_arn'])")
-UC_EXTERNAL_ID=$(terraform output -raw -json databricks_credential | python3 -c "import sys,json; print(json.load(sys.stdin)['external_id'])")
+UC_MASTER_ROLE_ARN=$(terraform output -json databricks_credential | python3 -c "import sys,json; print(json.load(sys.stdin)['unity_catalog_iam_arn'])")
+UC_EXTERNAL_ID=$(terraform output -json databricks_credential | python3 -c "import sys,json; print(json.load(sys.stdin)['external_id'])")
 
 echo "  uc_master_role_arn = ${UC_MASTER_ROLE_ARN}"
 echo "  uc_external_id     = ${UC_EXTERNAL_ID}"

@@ -1,0 +1,38 @@
+resources:
+  jobs:
+    energy_prices_orchestration:
+      name: "Energy Prices Orchestration"
+      description: "Fetches GB day-ahead electricity prices from ENTSO-E and runs the medallion pipeline."
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: landing_schema
+          default: ${var.landing_schema}
+
+      tasks:
+        - task_key: ingest_day_ahead_prices
+          description: "Call ENTSO-E REST API, parse XML, write JSONL to UC Volume"
+          spark_python_task:
+            python_file: ../../src/energy_prices/ingestion/entsoe_ingest.py
+            parameters:
+              - "{{job.parameters.catalog}}"
+              - "{{job.parameters.landing_schema}}"
+          environment_key: default
+
+        - task_key: run_bronze_pipeline
+          description: "Run the bronze pipeline"
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.bronze_pipeline.id}
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "3"
+            dependencies:
+              - requests
+
+      schedule:
+        quartz_cron_expression: "0 30 13 * * ?"
+        timezone_id: "UTC"
+        pause_status: UNPAUSED
