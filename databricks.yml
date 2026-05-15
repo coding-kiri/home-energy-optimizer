@@ -1,12 +1,6 @@
 bundle:
   name: home-energy-optimizer
 
-artifacts:
-  default:
-    type: whl
-    build: pip install -e .
-    path: .
-
 include:
   - resources/**/*.yml
 
