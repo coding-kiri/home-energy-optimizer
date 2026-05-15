@@ -7,7 +7,7 @@ include:
 variables:
   catalog:
     description: Unity Catalog catalog name
-    default: home-energy-optimizer
+    default: home-energy-optimizer-dev
   landing_schema:
     description: Schema that holds raw UC Volumes (landing zone)
     default: landing_zone
@@ -22,6 +22,15 @@ targets:
       profile: home-energy-optimizer-dev
       root_path: ~/bundles/${bundle.name}/${bundle.target}
     variables:
-      catalog: home-energy-optimizer
+      catalog: home-energy-optimizer-dev
+      landing_schema: landing_zone
+      bronze_schema: bronze_layer
+
+  prod:
+    workspace:
+      profile: home-energy-optimizer-prod
+      root_path: ~/bundles/${bundle.name}/${bundle.target}
+    variables:
+      catalog: home_energy_optimizer_prod
       landing_schema: landing_zone
       bronze_schema: bronze_layer

@@ -1,4 +1,12 @@
 terraform {
+  # Real values come from backend-dev.hcl / backend-prod.hcl (-backend-config on init).
+  # Placeholders satisfy terraform validate before init.
+  backend "s3" {
+    bucket = "REPLACE_ON_INIT"
+    key    = "REPLACE_ON_INIT/terraform.tfstate"
+    region = "eu-west-2"
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"

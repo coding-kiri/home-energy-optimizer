@@ -1,0 +1,16 @@
+# Copy to terraform.tfvars.prod (gitignored via *.tfvars) and fill in.
+# Use with: terraform init -upgrade -backend-config=backend-prod.hcl
+#           bash bootstrap.sh terraform.tfvars.prod backend-prod.hcl
+#
+# Databricks auth uses ~/.databrickscfg — no token in this file.
+
+env     = "prod"
+project = "home-energy-optimizer"
+
+aws_region = "eu-west-2"
+
+databricks_profile = "home-energy-optimizer-prod"
+
+# Bootstrap step 2 — filled automatically by bootstrap.sh; leave unset on first run.
+# uc_master_role_arn = "arn:aws:iam::..."
+# uc_external_id     = "..."

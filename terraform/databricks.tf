@@ -10,10 +10,11 @@ locals {
 
   self_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.prefix}-databricks-s3"
 
-  # Step 1 (bootstrap): only the self-assume statement so the role can be
-  # created and the storage credential can be registered with Databricks.
-  # Step 2 (bootstrap complete): add the UC master role statement so Unity
-  # Catalog can actually assume the role and access S3.
+  # Step 1 (bootstrap): trust the current AWS caller so the role can be created
+  # without referencing its own ARN (AWS rejects self-referential principals on
+  # role creation). The storage credential is registered in this step.
+  # Step 2 (bootstrap complete): replace with the UC master role + self-assume
+  # principals that Unity Catalog requires to actually access S3.
   trust_statements = local.bootstrap_complete ? [
     {
       Effect    = "Allow"
@@ -27,11 +28,11 @@ locals {
       Principal = { AWS = local.self_role_arn }
       Condition = { StringEquals = { "sts:ExternalId" = var.uc_external_id } }
     }
-  ] : [
+    ] : [
     {
       Effect    = "Allow"
       Action    = "sts:AssumeRole"
-      Principal = { AWS = local.self_role_arn }
+      Principal = { AWS = data.aws_caller_identity.current.arn }
       Condition = {}
     }
   ]
