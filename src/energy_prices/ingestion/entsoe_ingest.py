@@ -138,7 +138,7 @@ def main() -> None:
     dbutils = DBUtils(spark)
     token = dbutils.secrets.get(scope=SECRET_SCOPE, key=SECRET_KEY)
 
-    now = datetime(2020, 1, 2)
+    now = datetime(2020, 1, 3)
     date_str = now.strftime("%Y-%m-%d")
 
     params = build_query_params(token, now)
