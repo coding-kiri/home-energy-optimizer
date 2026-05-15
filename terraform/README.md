@@ -4,7 +4,7 @@ Infrastructure is parameterized by `env` (`dev` or `prod`). **Each environment m
 
 ## One-time manual setup (AWS / Databricks)
 
-1. **S3 bucket + DynamoDB table** for Terraform state (same account/region as your stacks is typical). The bucket must exist before the first `terraform init` with the S3 backend.
+1. **S3 bucket** for Terraform state (same account/region as your stacks is typical). The bucket must exist before the first `terraform init` with the S3 backend. State locking uses `use_lockfile = true` (native S3 locking, no DynamoDB table required).
 2. **Databricks workspaces** for dev and prod (or your chosen split), each attached to Unity Catalog as required by your account.
 3. **`~/.databrickscfg` profiles** matching `databricks_profile` in each tfvars file (defaults: `home-energy-optimizer-dev`, `home-energy-optimizer-prod`).
 4. **Unity Catalog catalogs** referenced in [../databricks.yml](../databricks.yml) per target (`catalog` under each `targets.*.variables`). Create empty catalogs and grant your principals as needed. Terraform does not create catalogs today.

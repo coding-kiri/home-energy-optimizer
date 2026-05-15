@@ -20,10 +20,10 @@ resources:
               - "{{job.parameters.landing_schema}}"
           environment_key: default
 
-        - task_key: run_bronze_pipeline
-          description: "Run the bronze pipeline"
-          pipeline_task:
-            pipeline_id: ${resources.pipelines.bronze_pipeline.id}
+        # - task_key: run_bronze_pipeline
+        #   description: "Run the bronze pipeline"
+        #   pipeline_task:
+        #     pipeline_id: ${resources.pipelines.bronze_pipeline.id}
 
       environments:
         - environment_key: default

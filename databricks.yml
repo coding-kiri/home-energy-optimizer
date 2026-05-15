@@ -19,6 +19,7 @@ targets:
   dev:
     default: true
     workspace:
+      host: https://dbc-9718c6fe-0da9.cloud.databricks.com
       profile: home-energy-optimizer-dev
       root_path: ~/bundles/${bundle.name}/${bundle.target}
     variables:
@@ -28,6 +29,7 @@ targets:
 
   prod:
     workspace:
+      host: https://dbc-9718c6fe-0da9.cloud.databricks.com
       profile: home-energy-optimizer-prod
       root_path: ~/bundles/${bundle.name}/${bundle.target}
     variables:

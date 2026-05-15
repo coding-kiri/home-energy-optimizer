@@ -218,3 +218,4 @@ terraform/terraform.tfvars.dev
 terraform/terraform.tfvars.prod
 terraform/backend-dev.hcl
 terraform/backend-prod.hcl
+.databricks

@@ -8,4 +8,4 @@ bucket         = "YOUR_TF_STATE_BUCKET"
 key            = "home-energy-optimizer/prod/terraform.tfstate"
 region         = "eu-west-2"
 encrypt        = true
-dynamodb_table = "YOUR_TF_LOCKS_TABLE"
+use_lockfile = true
