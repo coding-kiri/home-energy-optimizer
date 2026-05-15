@@ -35,7 +35,7 @@ targets:
       host: https://dbc-9718c6fe-0da9.cloud.databricks.com
       root_path: ~/bundles/${bundle.name}/${bundle.target}
     run_as:
-      service_principal_name: data-bot-prod
+      service_principal_name: 0f26eb41-a037-4eb4-9e47-d344d651cadf
     variables:
       service_principal_id: 0f26eb41-a037-4eb4-9e47-d344d651cadf
       catalog: home-energy-optimizer-prod
