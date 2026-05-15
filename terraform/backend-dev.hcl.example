@@ -1,0 +1,11 @@
+# Copy to backend-dev.hcl (gitignored) and fill in. Use one state key per environment.
+#
+#   terraform init -upgrade -backend-config=backend-dev.hcl
+#
+# If you already had local state, add -migrate-state on the first init with S3.
+
+bucket         = "YOUR_TF_STATE_BUCKET"
+key            = "home-energy-optimizer/dev/terraform.tfstate"
+region         = "eu-west-2"
+encrypt        = true
+use_lockfile = true
