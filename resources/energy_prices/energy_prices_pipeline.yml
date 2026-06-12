@@ -1,0 +1,26 @@
+resources:
+  pipelines:
+    energy_prices:
+      name: "Energy Prices Medallion"
+      catalog: ${var.catalog}
+      schema: ${var.bronze_schema}
+      serverless: true
+      continuous: false
+      photon: true
+      channel: CURRENT
+
+      event_log:
+        catalog: ${var.catalog}
+        schema: ${var.monitoring_schema}
+        name: entsoe_event_log
+
+      configuration:
+        catalog: ${var.catalog}
+        landing_schema: ${var.landing_schema}
+        bronze_schema: ${var.bronze_schema}
+        silver_schema: ${var.silver_schema}
+        monitoring_schema: ${var.monitoring_schema}
+
+      libraries:
+        - file:
+            path: ../../src/energy_prices/pipeline/entsoe_pipeline.py

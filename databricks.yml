@@ -14,6 +14,15 @@ variables:
   bronze_schema:
     description: Schema for bronze-layer Delta tables
     default: bronze_layer
+  silver_schema:
+    description: Schema for silver-layer Delta tables
+    default: silver_layer
+  monitoring_schema:
+    description: Schema for pipeline event log and DQ tables (dq_expectation_history, fact_data_quality; no dedicated monitoring bucket)
+    default: silver_layer
+  notification_email:
+    description: Email address for job failure notifications
+    default: ""
   service_principal_id:
     description: "Service principal ID"
     default: ""
