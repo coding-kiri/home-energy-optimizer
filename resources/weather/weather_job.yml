@@ -1,0 +1,48 @@
+resources:
+  jobs:
+    weather_orchestration:
+      name: "Weather Orchestration"
+      description: "Fetches historical hourly London weather from Open-Meteo and runs the medallion pipeline."
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: landing_schema
+          default: ${var.landing_schema}
+        - name: ingest_offset_days
+          default: "2353"
+
+      tasks:
+        - task_key: ingest_hourly_weather
+          description: "Call Open-Meteo archive API (one call per day), parse JSON, write CSV to UC Volume"
+          spark_python_task:
+            python_file: ../../src/weather/ingestion/openmeteo_ingest.py
+            parameters:
+              - "{{job.parameters.catalog}}"
+              - "{{job.parameters.landing_schema}}"
+              - "{{job.parameters.ingest_offset_days}}"
+          environment_key: default
+
+        - task_key: pipeline_update
+          description: "Run the Open-Meteo medallion pipeline (Bronze → Silver + DQ)"
+          depends_on:
+            - task_key: ingest_hourly_weather
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.weather.id}
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "3"
+            dependencies:
+              - requests
+
+      schedule:
+        quartz_cron_expression: "0 30 13 * * ?"
+        timezone_id: "UTC"
+        pause_status: PAUSED
+
+      # Uncomment and set var.notification_email to enable job-failure alerts.
+      # email_notifications:
+      #   on_failure:
+      #     - ${var.notification_email}

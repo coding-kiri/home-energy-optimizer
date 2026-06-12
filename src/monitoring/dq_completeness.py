@@ -110,6 +110,16 @@ REGISTRY: list[CompletenessSpec] = [
         ingested_at_col="ingested_at",
         grain="bidding_zone",
     ),
+    CompletenessSpec(
+        dataset="openmeteo",
+        source_table="silver_openmeteo_hourly_weather",
+        entity_cols=["location"],
+        period_col="observation_time",
+        expected_count=24,
+        value_col="temp_celsius",
+        ingested_at_col="ingested_at",
+        grain="location",
+    ),
 ]
 
 
