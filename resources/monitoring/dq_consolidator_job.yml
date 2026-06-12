@@ -1,0 +1,49 @@
+resources:
+  jobs:
+    dq_consolidator:
+      name: "DQ Consolidator"
+      description: "Single-writer monitoring job. Run-health: auto-discovers <name>_event_log tables → dq_expectation_history. Data-health: computes per-registered-dataset completeness → shared fact_data_quality."
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: silver_schema
+          default: ${var.silver_schema}
+        - name: monitoring_schema
+          default: ${var.monitoring_schema}
+
+      tasks:
+        - task_key: consolidate_run_health
+          description: "Discover *_event_log tables and incrementally MERGE expectation metrics"
+          spark_python_task:
+            python_file: ../../src/monitoring/dq_consolidate.py
+            parameters:
+              - "{{job.parameters.catalog}}"
+              - "{{job.parameters.monitoring_schema}}"
+          environment_key: default
+
+        - task_key: consolidate_data_health
+          description: "Compute per-dataset completeness from silver tables and MERGE into shared fact_data_quality"
+          spark_python_task:
+            python_file: ../../src/monitoring/dq_completeness.py
+            parameters:
+              - "{{job.parameters.catalog}}"
+              - "{{job.parameters.silver_schema}}"
+              - "{{job.parameters.monitoring_schema}}"
+          environment_key: default
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "3"
+
+      # Runs after the daily batch window (pipeline jobs trigger earlier, e.g. 13:30 UTC).
+      schedule:
+        quartz_cron_expression: "0 0 14 * * ?"
+        timezone_id: "UTC"
+        pause_status: PAUSED
+
+      # Uncomment and set var.notification_email to enable job-failure alerts.
+      # email_notifications:
+      #   on_failure:
+      #     - ${var.notification_email}

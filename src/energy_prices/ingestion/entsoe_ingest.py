@@ -2,11 +2,13 @@
 ENTSO-E Day-Ahead Price Ingestion
 
 Downloads the day-ahead price XML from the ENTSO-E Transparency Platform,
-parses each hourly Point into a Spark DataFrame, and writes it as CSV to a
-Unity Catalog Volume.
+parses each hourly Point into records, and writes CSV to a Unity Catalog Volume.
 
 Usage (spark_python_task):
-    entsoe_ingest.py <catalog> <schema>
+    entsoe_ingest.py <catalog> <schema> [ingest_offset_days]
+
+The ingest date is computed as today(UTC) minus ingest_offset_days so a fixed offset
+simulates daily live runs over historical ENTSO-E data.
 
 Secret required:
     scope: energy-optimizer
@@ -17,7 +19,7 @@ import io
 import re
 import sys
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import pandas as pd
 import requests
@@ -125,6 +127,11 @@ def parse_prices(xml_bytes: bytes, fetched_at: datetime) -> list[dict]:
     return records
 
 
+def resolve_ingest_date(offset_days: int) -> date:
+    """Return the delivery date to fetch: today(UTC) minus offset_days."""
+    return datetime.now(tz=timezone.utc).date() - timedelta(days=offset_days)
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -133,16 +140,21 @@ def parse_prices(xml_bytes: bytes, fetched_at: datetime) -> list[dict]:
 def main() -> None:
     catalog = sys.argv[1] if len(sys.argv) > 1 else "home-energy-optimizer"
     schema = sys.argv[2] if len(sys.argv) > 2 else "landing_zone"
+    offset_days = int(sys.argv[3]) if len(sys.argv) > 3 else 0
 
     spark = SparkSession.builder.getOrCreate()
     dbutils = DBUtils(spark)
     token = dbutils.secrets.get(scope=SECRET_SCOPE, key=SECRET_KEY)
 
-    now = datetime(2020, 1, 3)
-    date_str = now.strftime("%Y-%m-%d")
+    ingest_date = resolve_ingest_date(offset_days)
+    date_str = ingest_date.isoformat()
+    fetch_datetime = datetime.combine(ingest_date, datetime.min.time())
 
-    params = build_query_params(token, now)
-    print(f"Fetching: periodStart={params['periodStart']}  periodEnd={params['periodEnd']}")
+    params = build_query_params(token, fetch_datetime)
+    print(
+        f"Ingest date={date_str} (offset_days={offset_days})  "
+        f"periodStart={params['periodStart']}  periodEnd={params['periodEnd']}"
+    )
 
     fetched_at = datetime.now(tz=timezone.utc)
     xml_bytes = fetch_xml(params)

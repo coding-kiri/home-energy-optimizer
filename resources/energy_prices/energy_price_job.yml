@@ -9,21 +9,26 @@ resources:
           default: ${var.catalog}
         - name: landing_schema
           default: ${var.landing_schema}
+        - name: ingest_offset_days
+          default: "2353"
 
       tasks:
         - task_key: ingest_day_ahead_prices
-          description: "Call ENTSO-E REST API, parse XML, write JSONL to UC Volume"
+          description: "Call ENTSO-E REST API, parse XML, write CSV to UC Volume"
           spark_python_task:
             python_file: ../../src/energy_prices/ingestion/entsoe_ingest.py
             parameters:
               - "{{job.parameters.catalog}}"
               - "{{job.parameters.landing_schema}}"
+              - "{{job.parameters.ingest_offset_days}}"
           environment_key: default
 
-        # - task_key: run_bronze_pipeline
-        #   description: "Run the bronze pipeline"
-        #   pipeline_task:
-        #     pipeline_id: ${resources.pipelines.bronze_pipeline.id}
+        - task_key: pipeline_update
+          description: "Run the ENTSO-E medallion pipeline (Bronze → Silver + DQ)"
+          depends_on:
+            - task_key: ingest_day_ahead_prices
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.energy_prices.id}
 
       environments:
         - environment_key: default
@@ -35,4 +40,9 @@ resources:
       schedule:
         quartz_cron_expression: "0 30 13 * * ?"
         timezone_id: "UTC"
-        # pause_status: UNPAUSED
+        pause_status: PAUSED
+
+      # Uncomment and set var.notification_email to enable job-failure alerts.
+      # email_notifications:
+      #   on_failure:
+      #     - ${var.notification_email}
