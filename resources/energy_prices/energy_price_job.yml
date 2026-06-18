@@ -40,7 +40,6 @@ resources:
       schedule:
         quartz_cron_expression: "0 30 13 * * ?"
         timezone_id: "UTC"
-        pause_status: PAUSED
 
       # Uncomment and set var.notification_email to enable job-failure alerts.
       # email_notifications:

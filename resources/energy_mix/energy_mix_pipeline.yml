@@ -1,0 +1,26 @@
+resources:
+  pipelines:
+    energy_mix:
+      name: "Energy Mix Medallion"
+      catalog: ${var.catalog}
+      schema: ${var.bronze_schema}
+      serverless: true
+      continuous: false
+      photon: true
+      channel: CURRENT
+
+      event_log:
+        catalog: ${var.catalog}
+        schema: ${var.monitoring_schema}
+        name: entsoe_generation_event_log
+
+      configuration:
+        catalog: ${var.catalog}
+        landing_schema: ${var.landing_schema}
+        bronze_schema: ${var.bronze_schema}
+        silver_schema: ${var.silver_schema}
+        monitoring_schema: ${var.monitoring_schema}
+
+      libraries:
+        - file:
+            path: ../../src/energy_mix/pipeline/entsoe_generation_pipeline.py
