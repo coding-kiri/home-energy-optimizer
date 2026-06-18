@@ -2,13 +2,11 @@ resources:
   jobs:
     dq_consolidator:
       name: "DQ Consolidator"
-      description: "Single-writer monitoring job. Run-health: auto-discovers <name>_event_log tables → dq_expectation_history. Data-health: computes per-registered-dataset completeness → shared fact_data_quality."
+      description: "Single-writer monitoring job. Auto-discovers <name>_event_log tables and merges expectation metrics into dq_expectation_history."
 
       parameters:
         - name: catalog
           default: ${var.catalog}
-        - name: silver_schema
-          default: ${var.silver_schema}
         - name: monitoring_schema
           default: ${var.monitoring_schema}
 
@@ -19,16 +17,6 @@ resources:
             python_file: ../../src/monitoring/dq_consolidate.py
             parameters:
               - "{{job.parameters.catalog}}"
-              - "{{job.parameters.monitoring_schema}}"
-          environment_key: default
-
-        - task_key: consolidate_data_health
-          description: "Compute per-dataset completeness from silver tables and MERGE into shared fact_data_quality"
-          spark_python_task:
-            python_file: ../../src/monitoring/dq_completeness.py
-            parameters:
-              - "{{job.parameters.catalog}}"
-              - "{{job.parameters.silver_schema}}"
               - "{{job.parameters.monitoring_schema}}"
           environment_key: default
 

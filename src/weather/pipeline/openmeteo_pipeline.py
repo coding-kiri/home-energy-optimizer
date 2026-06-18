@@ -3,10 +3,6 @@ Open-Meteo hourly weather — Lakeflow Declarative Pipeline (Bronze → Silver +
 
 Mirrors the ENTSO-E pipeline: Auto Loader ingests landing CSV into a Bronze table,
 then a batch materialized view dedupes to one row per location × observation hour.
-
-Run-health counts are per pipeline run, not per observation date — a backfill run mixes
-many dates into one counter. Per-date completeness lives in the shared
-silver_layer.fact_data_quality, built by the monitoring job (src/monitoring/dq_completeness.py).
 """
 
 import dlt

@@ -15,9 +15,6 @@ Design:
   per-micro-batch flow events into one row per run; re-running with no new events is a
   no-op.
 
-Run-health counts are per pipeline RUN, not per delivery date. Per-date completeness
-lives in the shared fact_data_quality table (built by the sibling dq_completeness.py task).
-
 Usage (spark_python_task):
     dq_consolidate.py <catalog> <monitoring_schema>
 """
