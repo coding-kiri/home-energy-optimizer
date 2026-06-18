@@ -1,8 +1,8 @@
 resources:
   jobs:
-    weather_orchestration:
-      name: "Weather Orchestration"
-      description: "Fetches historical hourly London weather from Open-Meteo and runs the medallion pipeline."
+    energy_mix_orchestration:
+      name: "Energy Mix Orchestration"
+      description: "Fetches GB actual generation per production type from ENTSO-E and runs the medallion pipeline."
 
       parameters:
         - name: catalog
@@ -13,10 +13,10 @@ resources:
           default: "2353"
 
       tasks:
-        - task_key: ingest_hourly_weather
-          description: "Call Open-Meteo archive API (one call per day), parse JSON, write CSV to UC Volume"
+        - task_key: ingest_actual_generation
+          description: "Call ENTSO-E REST API, parse A75 XML, write CSV to UC Volume"
           spark_python_task:
-            python_file: ../../src/weather/ingestion/openmeteo_ingest.py
+            python_file: ../../src/energy_mix/ingestion/entsoe_generation_ingest.py
             parameters:
               - "{{job.parameters.catalog}}"
               - "{{job.parameters.landing_schema}}"
@@ -24,11 +24,11 @@ resources:
           environment_key: default
 
         - task_key: pipeline_update
-          description: "Run the Open-Meteo medallion pipeline (Bronze → Silver + DQ)"
+          description: "Run the ENTSO-E generation medallion pipeline (Bronze → Silver + DQ)"
           depends_on:
-            - task_key: ingest_hourly_weather
+            - task_key: ingest_actual_generation
           pipeline_task:
-            pipeline_id: ${resources.pipelines.weather.id}
+            pipeline_id: ${resources.pipelines.energy_mix.id}
 
       environments:
         - environment_key: default

@@ -1,0 +1,22 @@
+---
+alwaysApply: true
+---
+
+# Coding Conventions
+- Use Python 3.11+ syntax.
+- Follow existing patterns and project structure; don't reinvent what's already there.
+- Prefer simple, understandable code instead of "clever" logic and workarounds. If you are unsure ask user for help.
+- Avoid nested functions.
+- Avoid hardcoding values, prefer parameters instead.
+- Prefer vectorized operations over the loops.
+- Avoid creating new files, prefer extending existing modules.
+
+# Additional instructions
+- Add inline comments for complex logics.
+- Avoid doing multifile changes, work on one file at a time and verify work with user. Seek user approval before moving on.
+- If available, use skills such as grill-me, grill-with-docs to understand better what user wants.
+
+# Package management
+- This project uses `uv` for package management.
+  - Run scripts with `uv run python` not `python`.
+  - Add and remove dependencies using `uv add` or `uv remove`.
