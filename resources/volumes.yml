@@ -5,3 +5,8 @@ resources:
       schema_name: ${var.landing_schema}
       name: raw_entsoe
       volume_type: MANAGED
+    raw_openmeteo:
+      catalog_name: ${var.catalog}
+      schema_name: ${var.landing_schema}
+      name: raw_openmeteo
+      volume_type: MANAGED

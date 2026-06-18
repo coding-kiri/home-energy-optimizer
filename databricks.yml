@@ -18,7 +18,7 @@ variables:
     description: Schema for silver-layer Delta tables
     default: silver_layer
   monitoring_schema:
-    description: Schema for pipeline event log and DQ tables (dq_expectation_history, fact_data_quality; no dedicated monitoring bucket)
+    description: Schema for pipeline event logs and dq_expectation_history; no dedicated monitoring bucket
     default: silver_layer
   notification_email:
     description: Email address for job failure notifications

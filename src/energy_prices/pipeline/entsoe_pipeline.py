@@ -3,11 +3,7 @@ ENTSO-E day-ahead prices — Lakeflow Declarative Pipeline (Bronze → Silver + 
 
 Acceptance testing (manual, after first clean run): drop a CSV with bad rows into the
 Volume landing path and re-trigger the job. Expect warn counters in the event log /
-dq_expectation_history. Completeness gaps are best tested by omitting price slots.
-
-Run-health counts are per pipeline run, not per delivery date — a backfill run mixes
-many delivery dates into one counter. Per-date completeness lives in the shared
-silver_layer.fact_data_quality, built by the monitoring job (src/monitoring/dq_completeness.py).
+dq_expectation_history.
 """
 
 import dlt
@@ -52,7 +48,7 @@ silver_entsoe_warn_rules = {
     "plausible_price": "price_gbp_per_mwh <= 500",
 }
 
-# E1 rollout: all rules start at warn severity. Merge dicts for a single warn decorator;
+# All rules start at warn severity. Merge dicts for a single warn decorator;
 # split decorators when promoting drop_rules to expect_all_or_drop.
 _silver_all_rules = {**silver_entsoe_drop_rules, **silver_entsoe_warn_rules}
 
