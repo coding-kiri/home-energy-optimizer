@@ -1,5 +1,6 @@
 bundle:
   name: home-energy-optimizer
+  engine: direct
 
 include:
   - resources/**/*.yml

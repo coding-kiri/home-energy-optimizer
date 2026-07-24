@@ -25,7 +25,7 @@ resources:
           spec:
             environment_version: "3"
 
-      # Runs after the daily batch window (pipeline jobs trigger earlier, e.g. 13:30 UTC).
+      # Runs after the daily batch window (pipeline jobs: 13:30 / 13:35 / 13:40 UTC).
       schedule:
         quartz_cron_expression: "0 0 14 * * ?"
         timezone_id: "UTC"

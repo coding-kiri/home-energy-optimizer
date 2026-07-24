@@ -37,8 +37,9 @@ resources:
             dependencies:
               - requests
 
+      # Staggered +5 min from siblings (Free Edition: 1 concurrent job).
       schedule:
-        quartz_cron_expression: "0 30 13 * * ?"
+        quartz_cron_expression: "0 40 13 * * ?"
         timezone_id: "UTC"
 
       # Uncomment and set var.notification_email to enable job-failure alerts.

@@ -37,6 +37,7 @@ resources:
             dependencies:
               - requests
 
+      # Staggered +5 min from siblings (Free Edition: 1 concurrent job).
       schedule:
         quartz_cron_expression: "0 30 13 * * ?"
         timezone_id: "UTC"
