@@ -219,3 +219,7 @@ terraform/terraform.tfvars.prod
 terraform/backend-dev.hcl
 terraform/backend-prod.hcl
 __builtins__.pyi
+
+# Data Folders
+data/
+producer/sample_data/
