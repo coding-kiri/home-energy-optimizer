@@ -204,12 +204,16 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "databricks-connect" },
+    { name = "pandas" },
+    { name = "pyarrow" },
     { name = "requests" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "databricks-connect", specifier = ">=16.0" },
+    { name = "pandas", specifier = ">=3.0.2" },
+    { name = "pyarrow", specifier = ">=24.0.0" },
     { name = "requests", specifier = ">=2.32" },
 ]
 

@@ -1,0 +1,34 @@
+version: "3.9"
+
+# Local dev: producer -> mosquitto (plain TCP, no TLS).
+# Prod swaps MQTT_HOST for the IoT Core ATS endpoint, MQTT_TLS=true,
+# CERT_SECRET_ARN for the cert, CHECKPOINT_PARAM for SSM.
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  producer:
+    build: .
+    depends_on:
+      - mosquitto
+    environment:
+      SOURCE_URI: /data
+      START_DATE: "2020-08-10T00:00:00Z"
+      REPLAY_SPEED_FACTOR: "1800"        # one wave per second
+      HOUSEHOLD_LIMIT: "5"
+      WINDOW_DAYS: "7"
+      MQTT_HOST: mosquitto
+      MQTT_PORT: "1883"
+      MQTT_TLS: "false"
+      CHECKPOINT_FILE: /checkpoint/replay_checkpoint.txt
+    volumes:
+      - ./sample_data:/data:ro
+      - checkpoint:/checkpoint
+
+volumes:
+  checkpoint:
