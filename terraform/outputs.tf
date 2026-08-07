@@ -25,3 +25,28 @@ output "uc_external_id" {
   description = "Unity Catalog external ID — used by bootstrap.sh for step 2"
   value       = databricks_storage_credential.medallion.aws_iam_role[0].external_id
 }
+
+output "smart_meter_stream_name" {
+  description = "Kinesis stream receiving smart-meter readings"
+  value       = aws_kinesis_stream.smart_meter.name
+}
+
+output "smart_meter_iot_rule_name" {
+  description = "IoT Basic Ingest rule routing smart-meter readings to Kinesis"
+  value       = aws_iot_topic_rule.smart_meter_to_kds.name
+}
+
+output "smart_meter_dlq_arn" {
+  description = "SQS dead-letter queue ARN for the future Kinesis consumer"
+  value       = aws_sqs_queue.smart_meter_consumer_dlq.arn
+}
+
+output "lakebase_secret_arn" {
+  description = "ARN of the empty Lakebase connection secret for this environment"
+  value       = aws_secretsmanager_secret.lakebase.arn
+}
+
+output "iot_certificate_secret_arn" {
+  description = "ARN of the IoT producer certificate secret"
+  value       = aws_secretsmanager_secret.iot_certificate.arn
+}
